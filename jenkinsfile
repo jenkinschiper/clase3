@@ -91,14 +91,15 @@ spec:
     stage('Build-Image'){
       steps {
         container('docker') {
-          echo 'crear imagen'
+          sh "docker build --tag=${imageTag} ."
         }
       }
     }
     stage('Publish-Image'){
       steps {
         container('gcloud') {
-          echo 'publicar imagen'
+          sh "cat /var/secrets/google/key.json  | docker login -u _json_key --password-stdin gcr.io"
+          sh "docker push ${imageTag}"
         }
       }
     }
